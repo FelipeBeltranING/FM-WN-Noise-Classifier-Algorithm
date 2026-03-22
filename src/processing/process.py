@@ -14,29 +14,34 @@ def loadAudio(file_path, sr=44100):
 def calcAutocovariance(y):
     return acovf(y,fft=True,demean=True).astype(np.float64)
     
-def calcFourier(y):
-    return np.abs(np.fft.fft(y)).astype(np.float64)
-    
-def calcNorm(y):
-    return np.float64(np.linalg.norm(y))
+def calcFourier(acov):
+    return np.fft.fft(acov)
+
+def calcNorm(fourier):
+    return np.abs(fourier)
 
 def fillArray(f ,results):
     
     y = loadAudio(f)
 
-    results.append([
-        calcAutocovariance(y),
-        calcFourier(y),
-        calcNorm(y)])
+    acov = calcAutocovariance(y)
+    fourier = calcFourier(acov)
+    norm = calcNorm(fourier)
 
-def calcAvg(results):
+    results.append([
+        acov,
+        fourier,
+        norm
+    ])
+
+def calcAvgVector(results):
 
     acovs, fouriers, norms = zip(*results)
     
     return {
         "acov": np.mean(acovs, axis=0),
         "fourier": np.mean(fouriers, axis=0),
-        "norm": np.mean(norms)
+        "norm": np.mean(norms,axis=0)
     }
     
 
