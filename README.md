@@ -4,6 +4,6 @@ Signal classifier that distinguishes FM radio signals from white noise using aut
 # Current Compilation and Execution Command
 ```bash
 
-python3.12 -m src.loaders.loaderDataSet
+python main.py
 
 ```
