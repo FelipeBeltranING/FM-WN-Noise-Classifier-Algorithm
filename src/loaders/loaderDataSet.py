@@ -2,7 +2,7 @@ import src.processing.process as process
 import numpy as np
 
 
-def loaderDataSet():
+def _loaderDataSet():
     
     pathsFM = process.obtainPaths("src/data/FM")
     pathsWN = process.obtainPaths("src/data/WN")
@@ -33,12 +33,14 @@ def loaderDataSet():
 
     return avg_fm,avg_wn
 
-def saveData(avg_fm,avg_wn):
+def _saveData(avg_fm,avg_wn):
     
     np.savetxt("src/dataSet/fmVector.txt", avg_fm['norm'])
     np.savetxt("src/dataSet/wnVector.txt", avg_wn['norm'])
 
         
-avg_fm,avg_wn = loaderDataSet()
-saveData(avg_fm,avg_wn)
-
+def train():
+    print("Iniciando entrenamiento...")
+    avg_fm, avg_wn = _loaderDataSet()
+    _saveData(avg_fm, avg_wn)
+    print("Entrenamiento completado.")

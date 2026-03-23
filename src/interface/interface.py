@@ -173,4 +173,6 @@ class App:
 def launch():
     root = tk.Tk()
     App(root)
+    root.protocol("WM_DELETE_WINDOW", lambda: root.quit())
     root.mainloop()
+    root.destroy()
