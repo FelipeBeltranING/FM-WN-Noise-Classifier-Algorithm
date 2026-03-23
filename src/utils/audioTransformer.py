@@ -1,63 +1,58 @@
 import os
-import wave
-import struct
+import numpy as np
+import threading
+import src.processing.process as process
 
-CARPETA_ENTRADA  = "InformationSignals0"        
-CARPETA_SALIDA   = "InformationSignals" 
-DURACION_SEG     = 2                 
-PREFIJO          = "IS"             
+SR = 44100
+DURACION_SEG = 2
+FRAMES_VENTANA = SR * DURACION_SEG
 
-
-def cortar_wav(ruta_entrada, ruta_salida, duracion_seg):
-    with wave.open(ruta_entrada, "rb") as wav_in:
-        framerate   = wav_in.getframerate()
-        n_channels  = wav_in.getnchannels()
-        sampwidth   = wav_in.getsampwidth()
-        total_frames = wav_in.getnframes()
-
-        frames_necesarios = int(framerate * duracion_seg)
-
-        if total_frames < frames_necesarios:
-            wav_in.rewind()
-            datos = wav_in.readframes(total_frames)
-            silencio_frames = frames_necesarios - total_frames
-            silencio = b'\x00' * silencio_frames * n_channels * sampwidth
-            datos += silencio
-        else:
-            wav_in.rewind()
-            datos = wav_in.readframes(frames_necesarios)
-
-        with wave.open(ruta_salida, "wb") as wav_out:
-            wav_out.setnchannels(n_channels)
-            wav_out.setsampwidth(sampwidth)
-            wav_out.setframerate(framerate)
-            wav_out.writeframes(datos)
+BASE = os.path.dirname(os.path.abspath(__file__))
+PATH_MIC = os.path.join(BASE, "..", "dataSet", "micProcessed.txt")
 
 
-def main():
-    os.makedirs(CARPETA_SALIDA, exist_ok=True)
+class AudioTransformer:
+    def __init__(self):
+        self._buffer = np.array([], dtype=np.float64)
+        self._resultados = []                               
+        self._lock = threading.Lock()                 
 
-    archivos = sorted([
-        f for f in os.listdir(CARPETA_ENTRADA)
-        if f.lower().endswith(".wav")
-    ])
+    def agregar(self, bloque: np.ndarray):
+        with self._lock:
+            self._buffer = np.concatenate((self._buffer, bloque))
+            while len(self._buffer) >= FRAMES_VENTANA:
+                ventana      = self._buffer[:FRAMES_VENTANA]
+                self._buffer = self._buffer[FRAMES_VENTANA:]
+                self._procesarVentana(ventana)
 
-    if not archivos:
-        print(f"⚠  No se encontraron archivos .wav en '{CARPETA_ENTRADA}'")
-        return
+    def detener(self) -> str:
+        with self._lock:
+            n = len(self._resultados)
 
-    print(f"✔  {len(archivos)} archivo(s) encontrado(s). Procesando...\n")
+        if n == 0:
+            raise RuntimeError("No hay fragmentos procesados. "
+                               "El audio fue menor a 2 segundos.")
 
-    for i, archivo in enumerate(archivos, start=1):
-        ruta_entrada = os.path.join(CARPETA_ENTRADA, archivo)
-        nuevo_nombre = f"{PREFIJO}{i:02d}.wav"         
-        ruta_salida  = os.path.join(CARPETA_SALIDA, nuevo_nombre)
+        with self._lock:
+            avg = process.calcAvgVector(self._resultados)
 
-        cortar_wav(ruta_entrada, ruta_salida, DURACION_SEG)
-        print(f"  {archivo:30s}  →  {nuevo_nombre}")
+        os.makedirs(os.path.dirname(PATH_MIC), exist_ok=True)
+        np.savetxt(PATH_MIC, avg["norm"])
 
-    print(f"\n✅ Listo. Archivos guardados en '{CARPETA_SALIDA}/'")
+        return PATH_MIC
 
+    def cantidadFragmentos(self) -> int:
+        with self._lock:
+            return len(self._resultados)
 
-if __name__ == "__main__":
-    main()
+    def reset(self):
+        with self._lock:
+            self._buffer = np.array([], dtype=np.float64)
+            self._resultados = []
+
+    def _procesarVentana(self, ventana: np.ndarray):
+        acov = process.calcAutocovariance(ventana)
+        fourier = process.calcFourier(acov)
+        norm = process.calcNorm(fourier)
+
+        self._resultados.append([acov, fourier, norm])
