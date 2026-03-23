@@ -27,7 +27,7 @@ class App:
         self.root = root
         self.root.title("Reconocedor de audio")
         self.root.configure(bg="#111111")
-        self.root.resizable(False, False)
+        self.root.resizable(True, True)
 
         self.stream = None
         self.ani = None
@@ -261,7 +261,6 @@ class App:
     
 def launch():
     root = tk.Tk()
-    root.resizable(True, True)
     App(root)
     root.protocol("WM_DELETE_WINDOW", lambda: root.quit())
     root.mainloop()
