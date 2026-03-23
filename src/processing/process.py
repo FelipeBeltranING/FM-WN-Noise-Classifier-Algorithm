@@ -39,9 +39,3 @@ def calcAvgVector(results):
         "norm":    np.mean(norms,    axis=0),
     }
  
-def fillArray_fromArray(y, results):
-    acov    = calcAutocovariance(y)
-    fourier = calcFourier(acov)
-    norm    = calcNorm(fourier)
- 
-    results.append([acov, fourier, norm])
