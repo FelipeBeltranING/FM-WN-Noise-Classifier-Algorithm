@@ -30,15 +30,13 @@ class AudioTransformer:
             n = len(self._resultados)
 
         if n == 0:
-            raise RuntimeError("No hay fragmentos procesados. "
-                               "El audio fue menor a 2 segundos.")
+            raise RuntimeError("No hay fragmentos procesados. El audio fue menor a 2 segundos.")
 
         with self._lock:
             avg = process.calcAvgVector(self._resultados)
 
         os.makedirs(os.path.dirname(PATH_MIC), exist_ok=True)
         np.savetxt(PATH_MIC, avg["norm"])
-
         return PATH_MIC
 
     def cantidadFragmentos(self) -> int:
