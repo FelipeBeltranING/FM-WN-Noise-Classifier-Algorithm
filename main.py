@@ -13,8 +13,8 @@ if __name__ == "__main__":
         train()
     elif opcion == "2":
         print("Iniciando grabación...")
-        launch()         # bloquea hasta que se cierra la ventana
+        launch()         
         print("Ventana cerrada, procediendo a clasificar...")
-        classify()       # la ventana se cerro, ahora clasificamos
+        classify()       
     else:
         print("Opcion invalida")
