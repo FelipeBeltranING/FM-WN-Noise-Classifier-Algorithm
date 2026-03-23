@@ -1,9 +1,9 @@
-import src.processing.process as process 
+import src.processing.process as process
 import numpy as np
 
 
 def _loaderDataSet():
-    
+
     pathsFM = process.obtainPaths("src/data/FM")
     pathsWN = process.obtainPaths("src/data/WN")
 
@@ -21,24 +21,20 @@ def _loaderDataSet():
 
     avg_fm = process.calcAvgVector(resultsFM)
     avg_wn = process.calcAvgVector(resultsWN)
-    
+
     print(f"\nNorma promedio FM: {np.mean(avg_fm['norm']):.5f}")
     print(f"Norma promedio WN: {np.mean(avg_wn['norm']):.5f}")
 
-    print(f"\nShape acov FM     : {avg_fm['acov'].shape}")
-    print(f"Shape fourier FM  : {avg_fm['fourier'].shape}")
+    return avg_fm, avg_wn
 
-    print(f"\nShape acov WN     : {avg_wn['acov'].shape}")
-    print(f"Shape fourier WN  : {avg_wn['fourier'].shape}")
 
-    return avg_fm,avg_wn
+def _saveData(avg_fm, avg_wn):
+    np.savetxt("src/dataSet/fmVector.txt",  avg_fm["norm"])
+    np.savetxt("src/dataSet/wnVector.txt",  avg_wn["norm"])
+    np.savetxt("src/dataSet/fmAcov.txt",    avg_fm["acov"])
+    np.savetxt("src/dataSet/wnAcov.txt",    avg_wn["acov"])
 
-def _saveData(avg_fm,avg_wn):
-    
-    np.savetxt("src/dataSet/fmVector.txt", avg_fm['norm'])
-    np.savetxt("src/dataSet/wnVector.txt", avg_wn['norm'])
 
-        
 def train():
     print("Iniciando entrenamiento...")
     avg_fm, avg_wn = _loaderDataSet()
