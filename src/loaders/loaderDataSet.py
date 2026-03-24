@@ -40,3 +40,5 @@ def train():
     avg_fm, avg_wn = _loaderDataSet()
     _saveData(avg_fm, avg_wn)
     print("Entrenamiento completado.")
+
+train()

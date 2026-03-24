@@ -8,8 +8,8 @@ DURACION_SEG   = 2
 FRAMES_VENTANA = SR * DURACION_SEG
  
 BASE         = os.path.dirname(os.path.abspath(__file__))
-PATH_MIC     = os.path.join(BASE, "..", "dataSet", "micProcessed.txt")
-PATH_MIC_ACOV = os.path.join(BASE, "..", "dataSet", "micAcov.txt")
+PATH_MIC     = os.path.join(BASE, "..", "dataset", "micProcessed.txt")
+PATH_MIC_ACOV = os.path.join(BASE, "..", "dataset", "micAcov.txt")
  
  
 class AudioTransformer:

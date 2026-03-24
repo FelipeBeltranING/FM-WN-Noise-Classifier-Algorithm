@@ -19,7 +19,7 @@ def calcFourier(acov):
  
 def calcNorm(fourier):
     n = len(fourier)
-    return np.abs(fourier[:n // 2])
+    return np.abs(fourier)
  
 def fillArray(f, results):
     y = loadAudio(f)
