@@ -32,17 +32,20 @@ The microphone signal is normalized and compared against the average vectors com
 
 ## Screenshots
 
-> **Recording screen** — live spectrum while audio is captured
+### 🟢 Recording screen
+*Live spectrum while audio is captured*
 
-<!-- screenshot: app recording, showing the live spectrum plot and the "Grabando..." status label -->
+![Recording Screen](docs/media/recordingnoise.gif)
 
-![Recording Screen](./docs/media/recordingnoise.gif)
+---
 
-> **Classification result** — comparative autocovariance + spectrum view
+### 📊 Classification result
+*Comparative autocovariance + spectrum view*
 
-<!-- screenshot: app after stopping, showing the two-panel comparative graph (autocovariance top, spectrum bottom) with the result label highlighted -->
+![Classification Result](docs/media/screenshot.png)
 
-![Screenshot](./docs/media/screenshot.gif)
+---
+
 
 ## Project structure
 
