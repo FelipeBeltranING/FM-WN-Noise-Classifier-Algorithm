@@ -35,10 +35,8 @@ def _saveData(avg_fm, avg_wn):
     np.savetxt("src/dataSet/wnAcov.txt",    avg_wn["acov"])
 
 
-def train():
-    print("Iniciando entrenamiento...")
-    avg_fm, avg_wn = _loaderDataSet()
-    _saveData(avg_fm, avg_wn)
-    print("Entrenamiento completado.")
 
-train()
+avg_fm, avg_wn = _loaderDataSet()
+_saveData(avg_fm, avg_wn)
+    
+
